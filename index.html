@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RideFlow - Smart Ride Booking</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal">
+            <span class="close-modal">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <form id="loginForm" class="auth-form active">
+                <h2>Welcome Back</h2>
+                <div class="form-group">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            
+            <form id="signupForm" class="auth-form">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <input type="text" id="signupName" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signupEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signupPassword" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 16L15 19L20 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>RideFlow</span>
+                </div>
+                <nav class="nav">
+                    <button class="nav-item active" data-view="booking">Book Ride</button>
+                    <button class="nav-item" data-view="rides">My Rides</button>
+                    <button class="nav-item" data-view="analytics">Analytics</button>
+                </nav>
+                <div class="user-section">
+                    <div id="authButtons">
+                        <button class="btn btn-ghost" id="loginBtn">Login</button>
+                        <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+                    </div>
+                    <div id="userProfile" class="user-profile" style="display: none;">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <span id="userName"></span>
+                        <button class="btn btn-ghost" id="logoutBtn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Booking View -->
+        <section id="bookingView" class="view active">
+            <div class="container">
+                <div class="hero">
+                    <h1 class="hero-title">Your ride, your way</h1>
+                    <p class="hero-subtitle">Book premium rides with real-time tracking and instant confirmation</p>
+                </div>
+
+                <div class="booking-card">
+                    <form id="bookingForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Pickup Location</label>
+                                <input type="text" id="pickupLocation" placeholder="Enter pickup address" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Dropoff Location</label>
+                                <input type="text" id="dropoffLocation" placeholder="Enter destination" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date & Time</label>
+                                <input type="datetime-local" id="rideDateTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Passengers</label>
+                                <select id="passengers" required>
+                                    <option value="1">1 Passenger</option>
+                                    <option value="2">2 Passengers</option>
+                                    <option value="3">3 Passengers</option>
+                                    <option value="4">4 Passengers</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="ride-types">
+                            <label>Choose Your Ride</label>
+                            <div class="ride-type-grid">
+                                <div class="ride-type-card" data-type="economy">
+                                    <div class="ride-icon">🚗</div>
+                                    <h3>Economy</h3>
+                                    <p class="ride-price">$12-15</p>
+                                    <p class="ride-desc">Affordable rides</p>
+                                </div>
+                                <div class="ride-type-card active" data-type="comfort">
+                                    <div class="ride-icon">🚙</div>
+                                    <h3>Comfort</h3>
+                                    <p class="ride-price">$18-22</p>
+                                    <p class="ride-desc">Extra space</p>
+                                </div>
+                                <div class="ride-type-card" data-type="premium">
+                                    <div class="ride-icon">🚘</div>
+                                    <h3>Premium</h3>
+                                    <p class="ride-price">$30-38</p>
+                                    <p class="ride-desc">Luxury experience</p>
+                                </div>
+                                <div class="ride-type-card" data-type="xl">
+                                    <div class="ride-icon">🚐</div>
+                                    <h3>XL</h3>
+                                    <p class="ride-price">$25-32</p>
+                                    <p class="ride-desc">Up to 6 people</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <span>Book Now</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7 14L13 8M13 8H7M13 8V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Rides View -->
+        <section id="ridesView" class="view">
+            <div class="container">
+                <div class="view-header">
+                    <h2>My Rides</h2>
+                    <div class="search-filter">
+                        <div class="search-box">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/>
+                                <path d="M14 14L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <input type="text" id="searchRides" placeholder="Search by location, driver, or status...">
+                        </div>
+                        <div class="filters">
+                            <select id="statusFilter">
+                                <option value="all">All Status</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <select id="typeFilter">
+                                <option value="all">All Types</option>
+                                <option value="economy">Economy</option>
+                                <option value="comfort">Comfort</option>
+                                <option value="premium">Premium</option>
+                                <option value="xl">XL</option>
+                            </select>
+                            <select id="sortBy">
+                                <option value="dateDesc">Newest First</option>
+                                <option value="dateAsc">Oldest First</option>
+                                <option value="priceDesc">Highest Price</option>
+                                <option value="priceAsc">Lowest Price</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ridesList" class="rides-list"></div>
+                <div id="emptyState" class="empty-state">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                        <circle cx="40" cy="40" r="30" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                        <path d="M30 45L35 50L50 35" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+                    </svg>
+                    <h3>No rides yet</h3>
+                    <p>Book your first ride to get started</p>
+                    <button class="btn btn-primary" onclick="showView('booking')">Book a Ride</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics View -->
+        <section id="analyticsView" class="view">
+            <div class="container">
+                <div class="view-header">
+                    <h2>Analytics Dashboard</h2>
+                    <div class="date-range">
+                        <select id="dateRange">
+                            <option value="7">Last 7 days</option>
+                            <option value="30">Last 30 days</option>
+                            <option value="90">Last 3 months</option>
+                            <option value="365">Last year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <h3 id="totalRides">0</h3>
+                            <p>Total Rides</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span id="ridesTrend">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <h3 id="totalSpent">$0</h3>
+                            <p>Total Spent</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span id="spentTrend">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <h3 id="avgCost">$0</h3>
+                            <p>Avg. Ride Cost</p>
+                        </div>
+                        <div class="stat-trend neutral">
+                            <span id="avgTrend">-</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <h3 id="completionRate">0%</h3>
+                            <p>Completion Rate</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span id="completionTrend">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Rides by Type</h3>
+                        <canvas id="rideTypeChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Monthly Spending</h3>
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="insights-card">
+                    <h3>Insights & Recommendations</h3>
+                    <div id="insightsList" class="insights-list"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Edit Ride Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Edit Ride</h2>
+            <form id="editForm">
+                <input type="hidden" id="editRideId">
+                <div class="form-group">
+                    <label>Pickup Location</label>
+                    <input type="text" id="editPickup" required>
+                </div>
+                <div class="form-group">
+                    <label>Dropoff Location</label>
+                    <input type="text" id="editDropoff" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date & Time</label>
+                        <input type="datetime-local" id="editDateTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Passengers</label>
+                        <select id="editPassengers" required>
+                            <option value="1">1 Passenger</option>
+                            <option value="2">2 Passengers</option>
+                            <option value="3">3 Passengers</option>
+                            <option value="4">4 Passengers</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ride Type</label>
+                    <select id="editRideType" required>
+                        <option value="economy">Economy</option>
+                        <option value="comfort">Comfort</option>
+                        <option value="premium">Premium</option>
+                        <option value="xl">XL</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
