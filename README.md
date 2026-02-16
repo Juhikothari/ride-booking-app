@@ -578,12 +578,10 @@ This project is open source and available under the MIT License.
 
 ## 👨‍💻 Author
 
-Built with ❤️ to demonstrate modern frontend development practices.
-
 **Contact:**
-- GitHub: [Your GitHub]
-- LinkedIn: [Your LinkedIn]
-- Email: [Your Email]
+- GitHub: https://github.com/Juhikothari
+- LinkedIn: https://www.linkedin.com/in/juhi-kothari-b92236261/
+- Email: juhikthr@gmail.com
 
 ---
 
