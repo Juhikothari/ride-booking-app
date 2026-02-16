@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RideFlow - Smart Ride Booking</title>
+    <meta name="description" content="Book rides instantly with RideFlow - Your premium ride booking platform">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Authentication Modal -->
     <div id="authModal" class="modal">
         <div class="modal-content auth-modal">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login">Login</button>
                 <button class="auth-tab" data-tab="signup">Sign Up</button>
@@ -20,24 +23,30 @@
             <form id="loginForm" class="auth-form active">
                 <h2>Welcome Back</h2>
                 <div class="form-group">
-                    <input type="email" id="loginEmail" placeholder="Email" required>
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required minlength="6">
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
+                <p class="form-hint">Demo: Use any email/password to create an account</p>
             </form>
             
             <form id="signupForm" class="auth-form">
                 <h2>Create Account</h2>
                 <div class="form-group">
-                    <input type="text" id="signupName" placeholder="Full Name" required>
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="John Doe" required minlength="2">
                 </div>
                 <div class="form-group">
-                    <input type="email" id="signupEmail" placeholder="Email" required>
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="your@email.com" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="signupPassword" placeholder="Password" required>
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Min. 6 characters" required minlength="6">
                 </div>
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
@@ -68,7 +77,7 @@
                     <div id="userProfile" class="user-profile" style="display: none;">
                         <div class="user-avatar" id="userAvatar"></div>
                         <span id="userName"></span>
-                        <button class="btn btn-ghost" id="logoutBtn">Logout</button>
+                        <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
                     </div>
                 </div>
             </div>
@@ -88,27 +97,29 @@
                     <form id="bookingForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Pickup Location</label>
-                                <input type="text" id="pickupLocation" placeholder="Enter pickup address" required>
+                                <label for="pickupLocation">Pickup Location</label>
+                                <input type="text" id="pickupLocation" placeholder="e.g., 123 Main Street" required>
                             </div>
                             <div class="form-group">
-                                <label>Dropoff Location</label>
-                                <input type="text" id="dropoffLocation" placeholder="Enter destination" required>
+                                <label for="dropoffLocation">Dropoff Location</label>
+                                <input type="text" id="dropoffLocation" placeholder="e.g., 456 Park Avenue" required>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Date & Time</label>
+                                <label for="rideDateTime">Date & Time</label>
                                 <input type="datetime-local" id="rideDateTime" required>
                             </div>
                             <div class="form-group">
-                                <label>Passengers</label>
+                                <label for="passengers">Passengers</label>
                                 <select id="passengers" required>
                                     <option value="1">1 Passenger</option>
                                     <option value="2">2 Passengers</option>
                                     <option value="3">3 Passengers</option>
                                     <option value="4">4 Passengers</option>
+                                    <option value="5">5 Passengers</option>
+                                    <option value="6">6 Passengers</option>
                                 </select>
                             </div>
                         </div>
@@ -230,7 +241,7 @@
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                 <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
-                            <span id="ridesTrend">0%</span>
+                            <span id="ridesTrend">-</span>
                         </div>
                     </div>
 
@@ -244,7 +255,7 @@
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                 <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
-                            <span id="spentTrend">0%</span>
+                            <span id="spentTrend">-</span>
                         </div>
                     </div>
 
@@ -269,7 +280,7 @@
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                 <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
-                            <span id="completionTrend">0%</span>
+                            <span id="completionTrend">-</span>
                         </div>
                     </div>
                 </div>
@@ -286,7 +297,7 @@
                 </div>
 
                 <div class="insights-card">
-                    <h3>Insights & Recommendations</h3>
+                    <h3>💡 Insights & Recommendations</h3>
                     <div id="insightsList" class="insights-list"></div>
                 </div>
             </div>
@@ -296,35 +307,37 @@
     <!-- Edit Ride Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
             <h2>Edit Ride</h2>
             <form id="editForm">
                 <input type="hidden" id="editRideId">
                 <div class="form-group">
-                    <label>Pickup Location</label>
+                    <label for="editPickup">Pickup Location</label>
                     <input type="text" id="editPickup" required>
                 </div>
                 <div class="form-group">
-                    <label>Dropoff Location</label>
+                    <label for="editDropoff">Dropoff Location</label>
                     <input type="text" id="editDropoff" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Date & Time</label>
+                        <label for="editDateTime">Date & Time</label>
                         <input type="datetime-local" id="editDateTime" required>
                     </div>
                     <div class="form-group">
-                        <label>Passengers</label>
+                        <label for="editPassengers">Passengers</label>
                         <select id="editPassengers" required>
                             <option value="1">1 Passenger</option>
                             <option value="2">2 Passengers</option>
                             <option value="3">3 Passengers</option>
                             <option value="4">4 Passengers</option>
+                            <option value="5">5 Passengers</option>
+                            <option value="6">6 Passengers</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Ride Type</label>
+                    <label for="editRideType">Ride Type</label>
                     <select id="editRideType" required>
                         <option value="economy">Economy</option>
                         <option value="comfort">Comfort</option>
@@ -343,7 +356,12 @@
     <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

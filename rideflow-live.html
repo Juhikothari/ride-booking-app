@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RideFlow - Smart Ride Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary: #00E5B8;
+    --primary-dark: #00B894;
+    --primary-light: #33EBC7;
+    --secondary: #FF6B9D;
+    --accent: #FFD93D;
+    --bg-primary: #0A0E1A;
+    --bg-secondary: #151B2D;
+    --bg-tertiary: #1E2640;
+    --bg-hover: #252D47;
+    --text-primary: #FFFFFF;
+    --text-secondary: #A8B3CF;
+    --text-muted: #6B7A99;
+    --success: #00E5B8;
+    --warning: #FFD93D;
+    --error: #FF6B9D;
+    --info: #6C9FFF;
+    --border: rgba(168, 179, 207, 0.1);
+    --shadow: rgba(0, 0, 0, 0.3);
+    --font-display: 'Outfit', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 400ms ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-display);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 229, 184, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 107, 157, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    background: rgba(10, 14, 26, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-md) 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.logo svg {
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.nav {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.nav-item.active {
+    color: var(--primary);
+    background: rgba(0, 229, 184, 0.1);
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+#authButtons {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.btn {
+    padding: var(--space-xs) var(--space-md);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: var(--bg-primary);
+    box-shadow: 0 4px 20px rgba(0, 229, 184, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(0, 229, 184, 0.4);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+    background: var(--bg-hover);
+}
+
+.btn-large {
+    padding: var(--space-md) var(--space-lg);
+    font-size: 1.1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-danger {
+    background: var(--error);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #FF5282;
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: var(--space-xs) var(--space-md);
+    font-size: 0.875rem;
+}
+
+.main-content {
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 100px);
+}
+
+.view {
+    display: none;
+    animation: fadeIn var(--transition-slow);
+}
+
+.view.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero {
+    text-align: center;
+    padding: var(--space-xl) 0;
+    margin-bottom: var(--space-lg);
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--text-primary), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-sm);
+    letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.booking-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    box-shadow: 0 20px 60px var(--shadow);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group select {
+    padding: var(--space-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    transition: all var(--transition-base);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 229, 184, 0.1);
+}
+
+.ride-types {
+    margin: var(--space-lg) 0;
+}
+
+.ride-types label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-md);
+}
+
+.ride-type-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+}
+
+.ride-type-card {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.ride-type-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+}
+
+.ride-type-card.active {
+    border-color: var(--primary);
+    background: rgba(0, 229, 184, 0.1);
+}
+
+.ride-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-xs);
+}
+
+.ride-type-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-xs);
+}
+
+.ride-price {
+    font-family: var(--font-mono);
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+}
+
+.ride-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.view-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: var(--space-xl) 0 var(--space-lg);
+}
+
+.view-header h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.search-filter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box svg {
+    position: absolute;
+    left: var(--space-md);
+    color: var(--text-muted);
+}
+
+.search-box input {
+    width: 100%;
+    padding: var(--space-md) var(--space-md) var(--space-md) 3rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1rem;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.filters {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.filters select {
+    padding: var(--space-xs) var(--space-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    cursor: pointer;
+}
+
+.rides-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.ride-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: all var(--transition-base);
+    animation: slideIn var(--transition-slow);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.ride-card:hover {
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+.ride-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+}
+
+.ride-info h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-xs);
+}
+
+.ride-route {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--text-secondary);
+}
+
+.ride-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border);
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.meta-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.meta-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.ride-actions {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-upcoming {
+    background: rgba(108, 159, 255, 0.2);
+    color: var(--info);
+}
+
+.status-completed {
+    background: rgba(0, 229, 184, 0.2);
+    color: var(--success);
+}
+
+.status-cancelled {
+    background: rgba(255, 107, 157, 0.2);
+    color: var(--error);
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-xl) 0;
+}
+
+.empty-state svg {
+    margin-bottom: var(--space-md);
+    color: var(--text-muted);
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-xs);
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-content h3 {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+}
+
+.stat-content p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.stat-trend.positive {
+    color: var(--success);
+}
+
+.stat-trend.negative {
+    color: var(--error);
+}
+
+.stat-trend.neutral {
+    color: var(--text-muted);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.chart-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+}
+
+.chart-card h3 {
+    margin-bottom: var(--space-md);
+    font-size: 1.25rem;
+}
+
+.insights-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+}
+
+.insights-card h3 {
+    margin-bottom: var(--space-md);
+    font-size: 1.25rem;
+}
+
+.insights-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.insight-item {
+    padding: var(--space-md);
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--radius-sm);
+}
+
+.insight-item h4 {
+    margin-bottom: var(--space-xs);
+}
+
+.insight-item p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+    animation: fadeIn var(--transition-base);
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: scaleIn var(--transition-base);
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.auth-modal {
+    max-width: 400px;
+}
+
+.close-modal {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.close-modal:hover {
+    color: var(--text-primary);
+}
+
+.auth-tabs {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.auth-tab {
+    flex: 1;
+    padding: var(--space-sm);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-secondary);
+    font-family: var(--font-display);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.auth-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+    animation: fadeIn var(--transition-base);
+}
+
+.auth-form h2 {
+    margin-bottom: var(--space-lg);
+}
+
+.modal-actions {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+}
+
+.modal-actions .btn {
+    flex: 1;
+}
+
+.form-hint {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: var(--space-sm);
+    text-align: center;
+}
+
+.toast {
+    position: fixed;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 40px var(--shadow);
+    z-index: 2000;
+    display: none;
+    animation: slideInRight var(--transition-base);
+    min-width: 250px;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toast.show {
+    display: block;
+}
+
+.toast.success {
+    border-color: var(--success);
+    border-left: 4px solid var(--success);
+}
+
+.toast.error {
+    border-color: var(--error);
+    border-left: 4px solid var(--error);
+}
+
+.toast.info {
+    border-color: var(--info);
+    border-left: 4px solid var(--info);
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 26, 0.9);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--border);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.date-range select {
+    padding: var(--space-xs) var(--space-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    cursor: pointer;
+}
+
+@media (max-width: 968px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    .stats-grid,
+    .charts-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .ride-type-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .header-content {
+        flex-wrap: wrap;
+    }
+    .nav {
+        order: 3;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .hero-title {
+        font-size: 2rem;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .ride-type-grid,
+    .stats-grid,
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    .search-filter {
+        width: 100%;
+    }
+    .filters {
+        flex-direction: column;
+    }
+    .filters select {
+        width: 100%;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal">
+            <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            <form id="loginForm" class="auth-form active">
+                <h2>Welcome Back</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p class="form-hint">Demo: Use any email/password to create account</p>
+            </form>
+            <form id="signupForm" class="auth-form">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="John Doe" required minlength="2">
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Min. 6 characters" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 16L15 19L20 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>RideFlow</span>
+                </div>
+                <nav class="nav">
+                    <button class="nav-item active" data-view="booking">Book Ride</button>
+                    <button class="nav-item" data-view="rides">My Rides</button>
+                    <button class="nav-item" data-view="analytics">Analytics</button>
+                </nav>
+                <div class="user-section">
+                    <div id="authButtons">
+                        <button class="btn btn-ghost" id="loginBtn">Login</button>
+                        <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+                    </div>
+                    <div id="userProfile" class="user-profile" style="display: none;">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <span id="userName"></span>
+                        <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Booking View -->
+        <section id="bookingView" class="view active">
+            <div class="container">
+                <div class="hero">
+                    <h1 class="hero-title">Your ride, your way</h1>
+                    <p class="hero-subtitle">Book premium rides with real-time tracking and instant confirmation</p>
+                </div>
+                <div class="booking-card">
+                    <form id="bookingForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="pickupLocation">Pickup Location</label>
+                                <input type="text" id="pickupLocation" placeholder="e.g., 123 Main Street" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dropoffLocation">Dropoff Location</label>
+                                <input type="text" id="dropoffLocation" placeholder="e.g., 456 Park Avenue" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rideDateTime">Date & Time</label>
+                                <input type="datetime-local" id="rideDateTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="passengers">Passengers</label>
+                                <select id="passengers" required>
+                                    <option value="1">1 Passenger</option>
+                                    <option value="2">2 Passengers</option>
+                                    <option value="3">3 Passengers</option>
+                                    <option value="4">4 Passengers</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ride-types">
+                            <label>Choose Your Ride</label>
+                            <div class="ride-type-grid">
+                                <div class="ride-type-card" data-type="economy">
+                                    <div class="ride-icon">🚗</div>
+                                    <h3>Economy</h3>
+                                    <p class="ride-price">$12-15</p>
+                                    <p class="ride-desc">Affordable rides</p>
+                                </div>
+                                <div class="ride-type-card active" data-type="comfort">
+                                    <div class="ride-icon">🚙</div>
+                                    <h3>Comfort</h3>
+                                    <p class="ride-price">$18-22</p>
+                                    <p class="ride-desc">Extra space</p>
+                                </div>
+                                <div class="ride-type-card" data-type="premium">
+                                    <div class="ride-icon">🚘</div>
+                                    <h3>Premium</h3>
+                                    <p class="ride-price">$30-38</p>
+                                    <p class="ride-desc">Luxury experience</p>
+                                </div>
+                                <div class="ride-type-card" data-type="xl">
+                                    <div class="ride-icon">🚐</div>
+                                    <h3>XL</h3>
+                                    <p class="ride-price">$25-32</p>
+                                    <p class="ride-desc">Up to 6 people</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <span>Book Now</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7 14L13 8M13 8H7M13 8V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rides View -->
+        <section id="ridesView" class="view">
+            <div class="container">
+                <div class="view-header">
+                    <h2>My Rides</h2>
+                    <div class="search-filter">
+                        <div class="search-box">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/>
+                                <path d="M14 14L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <input type="text" id="searchRides" placeholder="Search by location, driver, or status...">
+                        </div>
+                        <div class="filters">
+                            <select id="statusFilter">
+                                <option value="all">All Status</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <select id="typeFilter">
+                                <option value="all">All Types</option>
+                                <option value="economy">Economy</option>
+                                <option value="comfort">Comfort</option>
+                                <option value="premium">Premium</option>
+                                <option value="xl">XL</option>
+                            </select>
+                            <select id="sortBy">
+                                <option value="dateDesc">Newest First</option>
+                                <option value="dateAsc">Oldest First</option>
+                                <option value="priceDesc">Highest Price</option>
+                                <option value="priceAsc">Lowest Price</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="ridesList" class="rides-list"></div>
+                <div id="emptyState" class="empty-state">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                        <circle cx="40" cy="40" r="30" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                        <path d="M30 45L35 50L50 35" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+                    </svg>
+                    <h3>No rides yet</h3>
+                    <p>Book your first ride to get started</p>
+                    <button class="btn btn-primary" onclick="showView('booking')">Book a Ride</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics View -->
+        <section id="analyticsView" class="view">
+            <div class="container">
+                <div class="view-header">
+                    <h2>Analytics Dashboard</h2>
+                    <div class="date-range">
+                        <select id="dateRange">
+                            <option value="7">Last 7 days</option>
+                            <option value="30">Last 30 days</option>
+                            <option value="90">Last 3 months</option>
+                            <option value="365">Last year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <h3 id="totalRides">0</h3>
+                            <p>Total Rides</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span id="ridesTrend">-</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <h3 id="totalSpent">$0</h3>
+                            <p>Total Spent</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span id="spentTrend">-</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <h3 id="avgCost">$0</h3>
+                            <p>Avg. Ride Cost</p>
+                        </div>
+                        <div class="stat-trend neutral">
+                            <span id="avgTrend">-</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <h3 id="completionRate">0%</h3>
+                            <p>Completion Rate</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span id="completionTrend">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Rides by Type</h3>
+                        <canvas id="rideTypeChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Monthly Spending</h3>
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                </div>
+                <div class="insights-card">
+                    <h3>💡 Insights & Recommendations</h3>
+                    <div id="insightsList" class="insights-list"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
+            <h2>Edit Ride</h2>
+            <form id="editForm">
+                <input type="hidden" id="editRideId">
+                <div class="form-group">
+                    <label for="editPickup">Pickup Location</label>
+                    <input type="text" id="editPickup" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDropoff">Dropoff Location</label>
+                    <input type="text" id="editDropoff" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editDateTime">Date & Time</label>
+                        <input type="datetime-local" id="editDateTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassengers">Passengers</label>
+                        <select id="editPassengers" required>
+                            <option value="1">1 Passenger</option>
+                            <option value="2">2 Passengers</option>
+                            <option value="3">3 Passengers</option>
+                            <option value="4">4 Passengers</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editRideType">Ride Type</label>
+                    <select id="editRideType" required>
+                        <option value="economy">Economy</option>
+                        <option value="comfort">Comfort</option>
+                        <option value="premium">Premium</option>
+                        <option value="xl">XL</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+// Utility functions
+const Utils = {
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    },
+    formatPrice(price) {
+        return `$${price.toFixed(2)}`;
+    },
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    },
+    validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+};
+
+// Data Manager
+const DataManager = {
+    init() {
+        try {
+            if (!localStorage.getItem('rides')) localStorage.setItem('rides', JSON.stringify([]));
+            if (!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify([]));
+            if (!localStorage.getItem('currentUser')) localStorage.setItem('currentUser', JSON.stringify(null));
+            return true;
+        } catch (error) {
+            console.error('Storage init error:', error);
+            return false;
+        }
+    },
+    getRides() {
+        try { return JSON.parse(localStorage.getItem('rides') || '[]'); } 
+        catch { return []; }
+    },
+    setRides(rides) {
+        try { localStorage.setItem('rides', JSON.stringify(rides)); return true; } 
+        catch { return false; }
+    },
+    getUsers() {
+        try { return JSON.parse(localStorage.getItem('users') || '[]'); } 
+        catch { return []; }
+    },
+    setUsers(users) {
+        try { localStorage.setItem('users', JSON.stringify(users)); return true; } 
+        catch { return false; }
+    },
+    getCurrentUser() {
+        try { return JSON.parse(localStorage.getItem('currentUser')); } 
+        catch { return null; }
+    },
+    setCurrentUser(user) {
+        try { localStorage.setItem('currentUser', JSON.stringify(user)); return true; } 
+        catch { return false; }
+    }
+};
+
+// Auth Manager
+const AuthManager = {
+    init() {
+        this.updateUI();
+        this.attachEventListeners();
+    },
+    attachEventListeners() {
+        document.getElementById('loginBtn')?.addEventListener('click', () => this.showAuthModal('login'));
+        document.getElementById('signupBtn')?.addEventListener('click', () => this.showAuthModal('signup'));
+        document.getElementById('logoutBtn')?.addEventListener('click', () => this.logout());
+        document.getElementById('loginForm')?.addEventListener('submit', (e) => { e.preventDefault(); this.login(); });
+        document.getElementById('signupForm')?.addEventListener('submit', (e) => { e.preventDefault(); this.signup(); });
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => this.switchAuthTab(tab.dataset.tab));
+        });
+    },
+    showAuthModal(tab = 'login') {
+        document.getElementById('authModal')?.classList.add('active');
+        this.switchAuthTab(tab);
+    },
+    switchAuthTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+        document.getElementById(`${tab}Form`)?.classList.add('active');
+    },
+    login() {
+        const email = document.getElementById('loginEmail')?.value;
+        const password = document.getElementById('loginPassword')?.value;
+        if (!email || !password) return UIManager.showToast('Please fill all fields', 'error');
+        if (!Utils.validateEmail(email)) return UIManager.showToast('Invalid email', 'error');
+        const user = DataManager.getUsers().find(u => u.email === email && u.password === password);
+        if (user) {
+            DataManager.setCurrentUser(user);
+            this.updateUI();
+            closeModal('authModal');
+            UIManager.showToast(`Welcome back, ${user.name}!`, 'success');
+            RidesManager.loadRides();
+            AnalyticsManager.updateAnalytics();
+        } else {
+            UIManager.showToast('Invalid credentials', 'error');
+        }
+    },
+    signup() {
+        const name = document.getElementById('signupName')?.value;
+        const email = document.getElementById('signupEmail')?.value;
+        const password = document.getElementById('signupPassword')?.value;
+        if (!name || !email || !password) return UIManager.showToast('Please fill all fields', 'error');
+        if (name.length < 2) return UIManager.showToast('Name too short', 'error');
+        if (!Utils.validateEmail(email)) return UIManager.showToast('Invalid email', 'error');
+        if (password.length < 6) return UIManager.showToast('Password too short', 'error');
+        const users = DataManager.getUsers();
+        if (users.find(u => u.email === email)) return UIManager.showToast('Email exists', 'error');
+        const newUser = { id: Date.now().toString(), name: name.trim(), email: email.toLowerCase().trim(), password, createdAt: new Date().toISOString() };
+        users.push(newUser);
+        DataManager.setUsers(users);
+        DataManager.setCurrentUser(newUser);
+        this.updateUI();
+        closeModal('authModal');
+        UIManager.showToast(`Welcome, ${newUser.name}!`, 'success');
+        document.getElementById('signupForm')?.reset();
+    },
+    logout() {
+        if (confirm('Logout?')) {
+            DataManager.setCurrentUser(null);
+            this.updateUI();
+            UIManager.showToast('Logged out', 'success');
+            RidesManager.loadRides();
+            AnalyticsManager.updateAnalytics();
+            showView('booking');
+        }
+    },
+    updateUI() {
+        const user = DataManager.getCurrentUser();
+        const authButtons = document.getElementById('authButtons');
+        const userProfile = document.getElementById('userProfile');
+        if (user && authButtons && userProfile) {
+            authButtons.style.display = 'none';
+            userProfile.style.display = 'flex';
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+        } else if (authButtons && userProfile) {
+            authButtons.style.display = 'flex';
+            userProfile.style.display = 'none';
+        }
+    },
+    requireAuth() {
+        const user = DataManager.getCurrentUser();
+        if (!user) {
+            UIManager.showToast('Please login to continue', 'error');
+            this.showAuthModal('login');
+            return false;
+        }
+        return true;
+    }
+};
+
+// Rides Manager
+const RidesManager = {
+    currentFilters: { search: '', status: 'all', type: 'all', sortBy: 'dateDesc' },
+    init() {
+        this.attachEventListeners();
+        this.loadRides();
+        this.setDefaultDateTime();
+    },
+    attachEventListeners() {
+        document.getElementById('bookingForm')?.addEventListener('submit', (e) => { e.preventDefault(); this.createRide(); });
+        document.querySelectorAll('.ride-type-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.ride-type-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            });
+        });
+        document.getElementById('searchRides')?.addEventListener('input', Utils.debounce((e) => {
+            this.currentFilters.search = e.target.value;
+            this.filterAndSortRides();
+        }, 300));
+        document.getElementById('statusFilter')?.addEventListener('change', (e) => {
+            this.currentFilters.status = e.target.value;
+            this.filterAndSortRides();
+        });
+        document.getElementById('typeFilter')?.addEventListener('change', (e) => {
+            this.currentFilters.type = e.target.value;
+            this.filterAndSortRides();
+        });
+        document.getElementById('sortBy')?.addEventListener('change', (e) => {
+            this.currentFilters.sortBy = e.target.value;
+            this.filterAndSortRides();
+        });
+        document.getElementById('editForm')?.addEventListener('submit', (e) => { e.preventDefault(); this.updateRide(); });
+    },
+    createRide() {
+        if (!AuthManager.requireAuth()) return;
+        const pickup = document.getElementById('pickupLocation')?.value;
+        const dropoff = document.getElementById('dropoffLocation')?.value;
+        const dateTime = document.getElementById('rideDateTime')?.value;
+        const passengers = document.getElementById('passengers')?.value;
+        const selectedType = document.querySelector('.ride-type-card.active')?.dataset.type || 'comfort';
+        const user = DataManager.getCurrentUser();
+        if (!pickup || !dropoff || !dateTime || !passengers) return UIManager.showToast('Fill all fields', 'error');
+        const rideDate = new Date(dateTime);
+        if (rideDate < new Date()) return UIManager.showToast('Date must be future', 'error');
+        UIManager.showLoading();
+        setTimeout(() => {
+            const ride = {
+                id: Date.now().toString(),
+                userId: user.id,
+                pickup: pickup.trim(),
+                dropoff: dropoff.trim(),
+                dateTime,
+                passengers: parseInt(passengers),
+                type: selectedType,
+                status: 'upcoming',
+                price: this.calculatePrice(selectedType),
+                driver: this.generateDriverInfo(),
+                createdAt: new Date().toISOString(),
+                vehicle: this.generateVehicleInfo(selectedType)
+            };
+            const rides = DataManager.getRides();
+            rides.push(ride);
+            DataManager.setRides(rides);
+            UIManager.hideLoading();
+            UIManager.showToast('Ride booked! 🎉', 'success');
+            document.getElementById('bookingForm')?.reset();
+            this.setDefaultDateTime();
+            showView('rides');
+            setTimeout(() => UIManager.showToast('Driver being assigned...', 'info'), 2000);
+        }, 800);
+    },
+    setDefaultDateTime() {
+        const input = document.getElementById('rideDateTime');
+        if (input) {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset() + 30);
+            input.value = now.toISOString().slice(0, 16);
+            input.min = new Date().toISOString().slice(0, 16);
+        }
+    },
+    calculatePrice(type) {
+        const prices = { economy: [12,15], comfort: [18,22], premium: [30,38], xl: [25,32] };
+        const [min, max] = prices[type] || prices.comfort;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    generateDriverInfo() {
+        const names = ['John Smith', 'Sarah Johnson', 'Michael Brown', 'Emily Davis', 'David Wilson'];
+        return { name: names[Math.floor(Math.random() * names.length)], rating: (4.5 + Math.random() * 0.5).toFixed(1) };
+    },
+    generateVehicleInfo(type) {
+        const vehicles = { economy: ['Toyota Corolla', 'Honda Civic'], comfort: ['Toyota Camry', 'Honda Accord'], premium: ['Mercedes E-Class', 'BMW 5'], xl: ['Toyota Sienna', 'Honda Odyssey'] };
+        const models = vehicles[type] || vehicles.comfort;
+        const model = models[Math.floor(Math.random() * models.length)];
+        const plate = `${String.fromCharCode(65 + Math.random() * 26)}${String.fromCharCode(65 + Math.random() * 26)}${Math.floor(Math.random()*1000)}`;
+        return { model, plate };
+    },
+    loadRides() {
+        const user = DataManager.getCurrentUser();
+        if (!user) {
+            document.getElementById('ridesList').innerHTML = '';
+            const empty = document.getElementById('emptyState');
+            if (empty) {
+                empty.style.display = 'block';
+                empty.querySelector('p').textContent = 'Please login to view rides';
+            }
+            return;
+        }
+        this.filterAndSortRides();
+    },
+    filterAndSortRides() {
+        const user = DataManager.getCurrentUser();
+        if (!user) return;
+        let rides = DataManager.getRides().filter(r => r.userId === user.id);
+        if (this.currentFilters.search) {
+            const search = this.currentFilters.search.toLowerCase();
+            rides = rides.filter(r => 
+                r.pickup.toLowerCase().includes(search) ||
+                r.dropoff.toLowerCase().includes(search) ||
+                r.driver.name.toLowerCase().includes(search) ||
+                r.status.toLowerCase().includes(search)
+            );
+        }
+        if (this.currentFilters.status !== 'all') rides = rides.filter(r => r.status === this.currentFilters.status);
+        if (this.currentFilters.type !== 'all') rides = rides.filter(r => r.type === this.currentFilters.type);
+        rides.sort((a, b) => {
+            switch (this.currentFilters.sortBy) {
+                case 'dateDesc': return new Date(b.dateTime) - new Date(a.dateTime);
+                case 'dateAsc': return new Date(a.dateTime) - new Date(b.dateTime);
+                case 'priceDesc': return b.price - a.price;
+                case 'priceAsc': return a.price - b.price;
+                default: return 0;
+            }
+        });
+        this.renderRides(rides);
+    },
+    renderRides(rides) {
+        const container = document.getElementById('ridesList');
+        const emptyState = document.getElementById('emptyState');
+        if (!container || !emptyState) return;
+        if (rides.length === 0) {
+            container.innerHTML = '';
+            emptyState.style.display = 'block';
+            emptyState.querySelector('p').textContent = 'No rides found';
+            return;
+        }
+        emptyState.style.display = 'none';
+        container.innerHTML = rides.map(ride => `
+            <div class="ride-card">
+                <div class="ride-header">
+                    <div class="ride-info">
+                        <h3>${ride.type.charAt(0).toUpperCase() + ride.type.slice(1)} Ride</h3>
+                        <div class="ride-route">
+                            <span>${ride.pickup}</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M7 14L13 8M13 8H7M13 8V14" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>${ride.dropoff}</span>
+                        </div>
+                    </div>
+                    <span class="status-badge status-${ride.status}">${ride.status}</span>
+                </div>
+                <div class="ride-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Date & Time</span>
+                        <span class="meta-value">${Utils.formatDate(ride.dateTime)}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Driver</span>
+                        <span class="meta-value">${ride.driver.name} (⭐ ${ride.driver.rating})</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Vehicle</span>
+                        <span class="meta-value">${ride.vehicle.model}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Price</span>
+                        <span class="meta-value">${Utils.formatPrice(ride.price)}</span>
+                    </div>
+                </div>
+                <div class="ride-actions">
+                    ${ride.status === 'upcoming' ? `
+                        <button class="btn btn-ghost btn-sm" onclick="RidesManager.editRide('${ride.id}')">Edit</button>
+                        <button class="btn btn-primary btn-sm" onclick="RidesManager.completeRide('${ride.id}')">Complete</button>
+                        <button class="btn btn-danger btn-sm" onclick="RidesManager.cancelRide('${ride.id}')">Cancel</button>
+                    ` : ''}
+                    <button class="btn btn-ghost btn-sm" onclick="RidesManager.deleteRide('${ride.id}')">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    },
+    editRide(id) {
+        const ride = DataManager.getRides().find(r => r.id === id);
+        if (!ride) return UIManager.showToast('Ride not found', 'error');
+        document.getElementById('editRideId').value = ride.id;
+        document.getElementById('editPickup').value = ride.pickup;
+        document.getElementById('editDropoff').value = ride.dropoff;
+        document.getElementById('editDateTime').value = ride.dateTime;
+        document.getElementById('editPassengers').value = ride.passengers;
+        document.getElementById('editRideType').value = ride.type;
+        openModal('editModal');
+    },
+    updateRide() {
+        const id = document.getElementById('editRideId')?.value;
+        const rides = DataManager.getRides();
+        const idx = rides.findIndex(r => r.id === id);
+        if (idx === -1) return UIManager.showToast('Ride not found', 'error');
+        rides[idx] = {
+            ...rides[idx],
+            pickup: document.getElementById('editPickup')?.value.trim(),
+            dropoff: document.getElementById('editDropoff')?.value.trim(),
+            dateTime: document.getElementById('editDateTime')?.value,
+            passengers: parseInt(document.getElementById('editPassengers')?.value),
+            type: document.getElementById('editRideType')?.value,
+            price: this.calculatePrice(document.getElementById('editRideType')?.value)
+        };
+        DataManager.setRides(rides);
+        closeModal('editModal');
+        this.loadRides();
+        UIManager.showToast('Ride updated!', 'success');
+    },
+    completeRide(id) {
+        if (confirm('Mark as completed?')) {
+            const rides = DataManager.getRides();
+            const ride = rides.find(r => r.id === id);
+            if (ride) {
+                ride.status = 'completed';
+                DataManager.setRides(rides);
+                this.loadRides();
+                AnalyticsManager.updateAnalytics();
+                UIManager.showToast('Ride completed! 🎉', 'success');
+            }
+        }
+    },
+    cancelRide(id) {
+        if (confirm('Cancel this ride?')) {
+            const rides = DataManager.getRides();
+            const ride = rides.find(r => r.id === id);
+            if (ride) {
+                ride.status = 'cancelled';
+                DataManager.setRides(rides);
+                this.loadRides();
+                AnalyticsManager.updateAnalytics();
+                UIManager.showToast('Ride cancelled', 'error');
+            }
+        }
+    },
+    deleteRide(id) {
+        if (confirm('Delete this ride permanently?')) {
+            let rides = DataManager.getRides().filter(r => r.id !== id);
+            DataManager.setRides(rides);
+            this.loadRides();
+            AnalyticsManager.updateAnalytics();
+            UIManager.showToast('Ride deleted', 'success');
+        }
+    }
+};
+
+// Analytics Manager
+const AnalyticsManager = {
+    charts: {},
+    init() {
+        document.getElementById('dateRange')?.addEventListener('change', () => this.updateAnalytics());
+        this.updateAnalytics();
+    },
+    updateAnalytics() {
+        const user = DataManager.getCurrentUser();
+        if (!user) return this.clearAnalytics();
+        const days = parseInt(document.getElementById('dateRange')?.value || 30);
+        const rides = this.getFilteredRides(days);
+        this.updateStats(rides);
+        this.updateCharts(rides);
+        this.generateInsights(rides);
+    },
+    getFilteredRides(days) {
+        const user = DataManager.getCurrentUser();
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - days);
+        return DataManager.getRides().filter(r => r.userId === user.id && new Date(r.createdAt) >= cutoff);
+    },
+    updateStats(rides) {
+        const total = rides.length;
+        const completed = rides.filter(r => r.status === 'completed');
+        const totalSpent = completed.reduce((sum, r) => sum + r.price, 0);
+        const avgCost = completed.length > 0 ? totalSpent / completed.length : 0;
+        const completionRate = total > 0 ? (completed.length / total) * 100 : 0;
+        document.getElementById('totalRides').textContent = total;
+        document.getElementById('totalSpent').textContent = Utils.formatPrice(totalSpent);
+        document.getElementById('avgCost').textContent = Utils.formatPrice(avgCost);
+        document.getElementById('completionRate').textContent = `${completionRate.toFixed(0)}%`;
+        document.getElementById('ridesTrend').textContent = total > 0 ? '+12%' : '-';
+        document.getElementById('spentTrend').textContent = totalSpent > 0 ? '+8%' : '-';
+        document.getElementById('completionTrend').textContent = completionRate > 0 ? '+5%' : '-';
+    },
+    updateCharts(rides) {
+        this.createRideTypeChart(rides);
+        this.createSpendingChart(rides);
+    },
+    createRideTypeChart(rides) {
+        const ctx = document.getElementById('rideTypeChart');
+        if (!ctx) return;
+        const typeCounts = rides.reduce((acc, r) => { acc[r.type] = (acc[r.type] || 0) + 1; return acc; }, {});
+        if (this.charts.rideType) this.charts.rideType.destroy();
+        if (Object.keys(typeCounts).length === 0) return;
+        this.charts.rideType = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(typeCounts).map(t => t.charAt(0).toUpperCase() + t.slice(1)),
+                datasets: [{ data: Object.values(typeCounts), backgroundColor: ['#00E5B8', '#FF6B9D', '#FFD93D', '#6C9FFF'], borderWidth: 0 }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#A8B3CF', padding: 15, font: { size: 12 } } } } }
+        });
+    },
+    createSpendingChart(rides) {
+        const ctx = document.getElementById('spendingChart');
+        if (!ctx) return;
+        const completed = rides.filter(r => r.status === 'completed');
+        if (completed.length === 0) { if (this.charts.spending) this.charts.spending.destroy(); return; }
+        const monthly = completed.reduce((acc, r) => {
+            const month = new Date(r.dateTime).toLocaleString('default', { month: 'short' });
+            acc[month] = (acc[month] || 0) + r.price;
+            return acc;
+        }, {});
+        if (this.charts.spending) this.charts.spending.destroy();
+        this.charts.spending = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(monthly),
+                datasets: [{ label: 'Spending', data: Object.values(monthly), borderColor: '#00E5B8', backgroundColor: 'rgba(0, 229, 184, 0.1)', tension: 0.4, fill: true }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#A8B3CF', callback: v => '$' + v } }, x: { ticks: { color: '#A8B3CF' } } } }
+        });
+    },
+    generateInsights(rides) {
+        const container = document.getElementById('insightsList');
+        if (!container) return;
+        const insights = [];
+        if (rides.length > 0) {
+            const types = rides.reduce((acc, r) => { acc[r.type] = (acc[r.type] || 0) + 1; return acc; }, {});
+            const mostUsed = Object.entries(types).sort((a,b) => b[1] - a[1])[0];
+            if (mostUsed) {
+                const pct = Math.round((mostUsed[1] / rides.length) * 100);
+                insights.push({ title: '🚗 Most Popular', description: `You prefer ${mostUsed[0]} rides (${pct}% of bookings)` });
+            }
+        }
+        const completed = rides.filter(r => r.status === 'completed');
+        const avgCost = completed.length > 0 ? completed.reduce((sum, r) => sum + r.price, 0) / completed.length : 0;
+        if (avgCost > 25) insights.push({ title: '💎 Premium User', description: 'Your avg ride cost is above standard' });
+        if (completed.length >= 10) insights.push({ title: '⭐ Frequent Rider', description: `${completed.length} rides completed! You're a valued customer.` });
+        if (rides.length === 0) insights.push({ title: '🎯 Get Started', description: 'Book your first ride to unlock insights!' });
+        container.innerHTML = insights.map(i => `<div class="insight-item"><h4>${i.title}</h4><p>${i.description}</p></div>`).join('');
+    },
+    clearAnalytics() {
+        document.getElementById('totalRides').textContent = '0';
+        document.getElementById('totalSpent').textContent = '$0';
+        document.getElementById('avgCost').textContent = '$0';
+        document.getElementById('completionRate').textContent = '0%';
+        document.getElementById('insightsList').innerHTML = '<div class="insight-item"><h4>🔒 Login Required</h4><p>Please login to view analytics</p></div>';
+        if (this.charts.rideType) { this.charts.rideType.destroy(); this.charts.rideType = null; }
+        if (this.charts.spending) { this.charts.spending.destroy(); this.charts.spending = null; }
+    }
+};
+
+// UI Manager
+const UIManager = {
+    init() {
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => this.showView(item.dataset.view));
+        });
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => btn.closest('.modal')?.classList.remove('active'));
+        });
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+        });
+    },
+    showView(viewName) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(`${viewName}View`)?.classList.add('active');
+        document.querySelector(`[data-view="${viewName}"]`)?.classList.add('active');
+        if (viewName === 'rides') RidesManager.loadRides();
+        else if (viewName === 'analytics') AnalyticsManager.updateAnalytics();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    },
+    showLoading() {
+        document.getElementById('loadingOverlay')?.classList.add('active');
+    },
+    hideLoading() {
+        document.getElementById('loadingOverlay')?.classList.remove('active');
+    }
+};
+
+// Global functions
+function showView(viewName) { UIManager.showView(viewName); }
+function openModal(modalId) { document.getElementById(modalId)?.classList.add('active'); }
+function closeModal(modalId) { document.getElementById(modalId)?.classList.remove('active'); }
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚗 RideFlow initializing...');
+    try {
+        if (DataManager.init()) {
+            AuthManager.init();
+            RidesManager.init();
+            AnalyticsManager.init();
+            UIManager.init();
+            console.log('✅ RideFlow ready!');
+        }
+    } catch (error) {
+        console.error('❌ Initialization error:', error);
+        UIManager.showToast('Failed to initialize app', 'error');
+    }
+});
+    </script>
+</body>
+</html>
